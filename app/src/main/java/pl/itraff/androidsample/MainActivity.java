@@ -115,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Toast.makeText(this, "Testing", Toast.LENGTH_SHORT).show();
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_action_main);
         super.onCreate(savedInstanceState);
