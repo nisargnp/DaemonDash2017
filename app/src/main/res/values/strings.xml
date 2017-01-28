@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">DaemonDash2017</string>
+    <string name="btn_take_pic">Take a picture</string>
+    <string name="label_id">Client ID</string>
+    <string name="label_key">API Key</string>
+    <string name="label_mode">Mode</string>
+    <string name="label_filter">Filter</string>
+    <string name="label_size">Size</string>
+    <string-array name="array_sizes_single">
+        <item>240p</item>
+        <item>360p</item>
+        <item>480p</item>
+    </string-array>
+    <string-array name="array_sizes_multi">
+        <item>640p</item>
+        <item>1280p</item>
+        <item>1920p</item>
+    </string-array>
+    <string-array name="array_sizes_shelf"></string-array>
+    <string-array name="array_modes">
+        <item>Single</item>
+        <item>Multi</item>
+        <item>Shelf</item>
+    </string-array>
+    <string-array name="array_filter">
+        <item>All matches</item>
+        <item>Best matches</item>
+    </string-array>
+    <string name="iv_result_desc">Result of the image recognition</string>
+    <string name="txt_recognized">Recognized objects count: </string>
+    <string name="placeholder_id">Enter your Client ID here</string>
+    <string name="placeholder_key">Enter your API Key here</string>
+    <string name="hint_credentials">Please visit your account management panel in Recognize.im to get your credentials.</string>
+    <string name="hint_mode">The recognition mode selected here should match the one selected in your Recognize.im pictures management panel.</string>
+    <string name="hint_size">These are sample sizes. Please visit \"Query pictures\" section in Recognize.im documentation for further details.</string>
+    <string name="hint_shelf">Use your camera settings to fix the picture size.</string>
+    <string name="hint_filter">Please refer to \"Recognition Modes\" section in Recognize.im documentation for details.</string>
+    <string name="btn_view_result">View result</string>
+
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>
