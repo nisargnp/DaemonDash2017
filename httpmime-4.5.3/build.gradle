@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('httpmime-4.5.3.jar'))
