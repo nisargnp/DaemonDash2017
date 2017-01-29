@@ -21,7 +21,11 @@ public class DBHandler extends SQLiteOpenHelper {
     // Shops Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
-    private static final String KEY_SH_ADDR = "shop_address";
+    private static final String KEY_PRODUCTS = "products";
+    private static final String KEY_PRICES = "prices";
+    private static final String KEY_REVIEWER = "reviewer";
+    private static final String KEY_RATING = "rating";
+    private static final String KEY_STOCK = "stock";
 
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,8 +33,10 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_SHOPS + "("
-        + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
-        + KEY_SH_ADDR + " TEXT" + ")";
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
+                + KEY_PRODUCTS + " TEXT," + KEY_PRICES + " TEXT,"
+                + KEY_REVIEWER + " TEXT," + KEY_RATING + " TEXT,"
+                + KEY_STOCK + " TEXT" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -54,13 +60,15 @@ public class DBHandler extends SQLiteOpenHelper {
     public Shop getShop(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_SHOPS, new String[] {
-                KEY_ID, KEY_NAME, KEY_SH_ADDR }, KEY_ID + "=?",
+                KEY_ID, KEY_NAME, KEY_PRODUCTS, KEY_PRICES,
+                KEY_REVIEWER, KEY_RATING, KEY_STOCK}, KEY_ID + "=?",
                 new String[] { String.valueOf(id) },
                 null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
         Shop contact = new Shop(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2));
+                cursor.getString(1), cursor.getString(2), cursor.getString(3),
+                cursor.getString(4), cursor.getString(5), cursor.getString(6));
         // Return shop
         return contact;
     }
@@ -79,7 +87,11 @@ public class DBHandler extends SQLiteOpenHelper {
                  Shop shop = new Shop();
                  shop.setId(Integer.parseInt(cursor.getString(0)));
                  shop.setName(cursor.getString(1));
-                 shop.setAddress(cursor.getString(2));
+                 shop.setProducts(cursor.getString(2));
+                 shop.setPrices(cursor.getString(3));
+                 shop.setReviewer(cursor.getString(4));
+                 shop.setRating(cursor.getString(5));
+                 shop.setStockID(cursor.getString(6));
 
                  // Adding contact to list
                  shopList.add(shop);
@@ -106,7 +118,11 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, shop.getName());
-        values.put(KEY_SH_ADDR, shop.getAddresss());
+        values.put(KEY_PRODUCTS, shop.getProducts());
+        values.put(KEY_PRICES, shop.getPrices());
+        values.put(KEY_REVIEWER, shop.getReviewer());
+        values.put(KEY_RATING, shop.getRating());
+        values.put(KEY_STOCK, shop.getStockID());
 
         // Updating row
         return db.update(TABLE_SHOPS, values, KEY_ID + " = ?",
