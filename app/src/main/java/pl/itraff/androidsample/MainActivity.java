@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String PREF_MODE = "USER_MODE";
     public static final String PREF_SIZE = "USER_SIZE";
     protected static final String FILE_PROVIDER_NAME = "pl.itraff.fileprovider";
+    public static DBHandler database;
 
     File imageFile = null;
     Button btnViewResult;
@@ -116,6 +118,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        database = new DBHandler(this);
+        Parser.read();
+
+        for (Shop s : database.getAllShops())
+        {
+            Log.d("apple", s.toString());
+        }
 
         Toast.makeText(this, "Testing", Toast.LENGTH_SHORT).show();
 

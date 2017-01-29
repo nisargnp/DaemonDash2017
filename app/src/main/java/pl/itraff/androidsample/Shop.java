@@ -55,4 +55,13 @@ public class Shop {
     public String getRating() { return rating; }
 
     public String getStockID() { return stockID; }
+
+    public String toString()
+    {
+        String value = "";
+
+        value += (name + " " + products + " " + prices + " " + reviewer + " " + rating + " " + stockID);
+
+        return value;
+    }
 }
