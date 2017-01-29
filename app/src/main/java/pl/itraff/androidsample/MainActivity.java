@@ -1,14 +1,13 @@
 package pl.itraff.androidsample;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -16,12 +15,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,14 +32,25 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import pl.itraff.androidsample.Event.FailureEvent;
-import pl.itraff.androidsample.Event.RecognizeEvent;
 import pl.itraff.androidsample.Event.SuccessEvent;
+
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpResponseException;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.GenericJson;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.util.Key;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,16 +63,10 @@ public class MainActivity extends AppCompatActivity {
     protected static final String FILE_PROVIDER_NAME = "pl.itraff.fileprovider";
 
     File imageFile = null;
-    Spinner spinnerModes;
-    Spinner spinnerSizes;
-    Spinner spinnerFilter;
     Button btnViewResult;
     Button btnTakePic;
-    TextView textViewId;
-    TextView textViewKey;
     TextView textViewResult;
     ProgressBar progressBar;
-    SharedPreferences sharedPreferences;
     int sampleSize;
     ItraffApi iTraffApi;
 
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 // Ensure that there's a camera activity to handle the intent
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     String[] modeNames = getResources().getStringArray(R.array.array_modes);
-                    String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + modeNames[(int) spinnerModes.getSelectedItemId()] + ".jpeg";
+                    String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + modeNames[0] + ".jpeg";
                     File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "pl.itraff.androidsample/");
                     dir.mkdirs();
                     imageFile = new File(dir, fileName);
@@ -150,30 +151,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Build SharedPreferences object
-        sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
-
         // Assign form inputs, buttons and actions
-        textViewId = (TextView) findViewById(R.id.edit_id);
-        textViewKey = (TextView) findViewById(R.id.edit_key);
         textViewResult = (TextView) findViewById(R.id.txt_result);
         textViewResult.setVisibility(View.GONE);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-        spinnerModes = populateSpinner(R.id.spinner_modes, R.array.array_modes);
-        spinnerSizes = populateSpinner(R.id.spinner_sizes, R.array.array_sizes_single);
-        spinnerFilter = populateSpinner(R.id.spinner_filter, R.array.array_filter);
-        spinnerModes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                MainActivity.this.updateSizesSpinner(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // Do nothing
-            }
-        });
 
         btnViewResult = (Button) findViewById(R.id.btn_view_result);
         btnViewResult.setVisibility(View.GONE);
@@ -200,54 +182,12 @@ public class MainActivity extends AppCompatActivity {
      * Handles "?" buttons and Toast messages displayed when clicked
      */
     protected void assignHintActions() {
-        ImageButton hintId = (ImageButton) findViewById(R.id.btn_hint_id);
-        ImageButton hintKey = (ImageButton) findViewById(R.id.btn_hint_key);
         View.OnClickListener oclCredentials = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, getString(R.string.hint_credentials), Toast.LENGTH_LONG).show();
             }
         };
-        hintId.setOnClickListener(oclCredentials);
-        hintKey.setOnClickListener(oclCredentials);
-        ImageButton hintMode = (ImageButton) findViewById(R.id.btn_hint_mode);
-        hintMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, getString(R.string.hint_mode), Toast.LENGTH_LONG).show();
-            }
-        });
-        ImageButton hintSize = (ImageButton) findViewById(R.id.btn_hint_size);
-        hintSize.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, getString(R.string.hint_size), Toast.LENGTH_LONG).show();
-            }
-        });
-        ImageButton hintFilter = (ImageButton) findViewById(R.id.btn_hint_filter);
-        hintFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, getString(R.string.hint_filter), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    /**
-     * Populates sizes spinner with data basing on recognition mode selected
-     * @param mode - recognition mode
-     */
-    public void updateSizesSpinner(int mode) {
-        spinnerSizes.setEnabled(mode != 2);
-        TextView hintShelf = (TextView) findViewById(R.id.txt_hint_shelf);
-        hintShelf.setVisibility(mode == 2 ? View.VISIBLE : View.GONE);
-        spinnerSizes.setAdapter(null);
-        if (mode == 0) {
-            spinnerSizes = populateSpinner(R.id.spinner_sizes, R.array.array_sizes_single);
-        } else if (mode == 1) {
-            spinnerSizes = populateSpinner(R.id.spinner_sizes, R.array.array_sizes_multi);
-        }
-        spinnerSizes.setSelection(sharedPreferences.getInt(PREF_SIZE, 0));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -315,35 +255,42 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
 
-            Bitmap bitmap;
-            int modeId = (int) spinnerModes.getSelectedItemId();
-            int sizeId = (int) spinnerSizes.getSelectedItemId();
-            if (modeId == 2) {
-                bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            } else {
-                bitmap = getDownscaledBitmap(imageFile.getAbsolutePath(), ItraffApi.SIZES[modeId][sizeId]);
-            }
+            Toast.makeText(this, "Got Picture", Toast.LENGTH_SHORT).show();
 
-            // Do the API request
-            String userKey = textViewKey.getText().toString();
-            if (iTraffApi == null) {
-                iTraffApi = new ItraffApi(textViewId.getText().toString(), userKey, (int) spinnerModes.getSelectedItemId(), (int) spinnerFilter.getSelectedItemId());
-            } else {
-                iTraffApi
-                    .setClientId(textViewId.getText().toString())
-                    .setClientKey(userKey)
-                    .setMode((int) spinnerModes.getSelectedItemId())
-                    .setFilter((int) spinnerFilter.getSelectedItemId())
-                    ;
-            }
-            progressBar.setVisibility(View.VISIBLE);
-            btnViewResult.setVisibility(View.GONE);
-            textViewResult.setVisibility(View.GONE);
-            try {
-                EventBus.getDefault().post(new RecognizeEvent(bitmap2byteArray(bitmap), userKey, iTraffApi.getRequestUrl()));
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            Bundle extras = data.getExtras();
+
+//            Bitmap bitmap;
+//            int modeId = (int) 0;
+//            int sizeId = (int) 0;
+//            if (modeId == 2) {
+//                bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+//            } else {
+//                bitmap = getDownscaledBitmap(imageFile.getAbsolutePath(), ItraffApi.SIZES[modeId][sizeId]);
+//            }
+//
+//            // Do the API request
+//            String userKey = textViewKey.getText().toString();
+//            if (iTraffApi == null) {
+//                iTraffApi = new ItraffApi(textViewId.getText().toString(), userKey, 0, 0);
+//            } else {
+//                iTraffApi
+//                    .setClientId(textViewId.getText().toString())
+//                    .setClientKey(userKey)
+//                    .setMode((int) 0)
+//                    .setFilter((int) 0)
+//                    ;
+//            }
+//
+//            progressBar.setVisibility(View.VISIBLE);
+//            btnViewResult.setVisibility(View.GONE);
+//            textViewResult.setVisibility(View.GONE);
+//
+//            try {
+//                EventBus.getDefault().post(new RecognizeEvent(bitmap2byteArray(bitmap), userKey, iTraffApi.getRequestUrl()));
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            }
+
         }
     }
 
@@ -386,23 +333,12 @@ public class MainActivity extends AppCompatActivity {
      * Reads data from private SharedPreferences storage if available and assigns values to form inputs
      */
     protected void readSettings() {
-        textViewId.setText(sharedPreferences.getString(PREF_ID, ""));
-        textViewKey.setText(sharedPreferences.getString(PREF_KEY, ""));
-        int mode = sharedPreferences.getInt(PREF_MODE, 0);
-        spinnerModes.setSelection(mode);
-        updateSizesSpinner(mode);
     }
 
     /**
      * Reads data from inputs and saves it to private SharedPreferences storage
      */
     protected void saveSettings() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(PREF_ID, textViewId.getText().toString());
-        editor.putString(PREF_KEY, textViewKey.getText().toString());
-        editor.putInt(PREF_MODE, spinnerModes.getSelectedItemPosition());
-        editor.putInt(PREF_SIZE, spinnerSizes.getSelectedItemPosition());
-        editor.commit();
     }
 
 }
