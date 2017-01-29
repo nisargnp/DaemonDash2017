@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -33,9 +34,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.io.InputStream;
 
 import pl.itraff.androidsample.Event.FailureEvent;
 import pl.itraff.androidsample.Event.SuccessEvent;
@@ -51,6 +56,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.GenericJson;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.util.IOUtils;
 import com.google.api.client.util.Key;
 
 public class MainActivity extends AppCompatActivity {
@@ -119,14 +125,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        database = new DBHandler(this);
-        Parser.read();
-
-        for (Shop s : database.getAllShops())
-        {
-            Log.d("apple", s.toString());
-        }
-
         Toast.makeText(this, "Testing", Toast.LENGTH_SHORT).show();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -186,6 +184,35 @@ public class MainActivity extends AppCompatActivity {
 
         // Assigns onClickListeners to hint buttons
         assignHintActions();
+
+        AssetManager am = getApplicationContext().getAssets();
+
+        database = new DBHandler(this);
+
+        try {
+            File file = File.createTempFile("temp", "tmp");
+            file.deleteOnExit();
+            InputStream is = am.open("data.xls");
+            Log.d("qwerty", "OPENED!!!");
+            OutputStream outputStream = new FileOutputStream(file);
+            if (outputStream == null)
+                Log.d("adfasdf", "outputStream is null");
+            IOUtils.copy(is, outputStream);
+            Log.d("qwerty", "WROTE TO FILE!!!");
+            Log.d("log file", file.toString());
+            Log.d("is null", Boolean.toString(file == null));
+            Parser.read(file);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Log.d("fdsa", "Can't open the stream");
+        }
+
+        Log.d("Hello!", "Bye!");
+
+        for (Shop s : database.getAllShops())
+        {
+            Log.d("apple", s.toString());
+        }
     }
 
     /**
