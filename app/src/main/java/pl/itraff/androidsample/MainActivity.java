@@ -342,9 +342,6 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.d("status: ", "2 -- " + product);
 
-                        //TODO: REMOVE THIS
-                        product = "mcdonald";
-
                         String company = null;
                         for (String brand : BRANDS) {
                             if(product.toLowerCase().contains(brand.toLowerCase())) {
@@ -403,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.d("status: ", "5");
 
-                        finish();
+                        // finish();
 
                     } catch(Exception e){
                         System.out.println(e.getStackTrace().toString());

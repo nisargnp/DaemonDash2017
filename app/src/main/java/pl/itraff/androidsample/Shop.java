@@ -111,7 +111,6 @@ public class Shop {
             String tmp2 = priceScanner.next().trim();
             productPrices.put(tmp1, tmp2);
             productArray.add(tmp1 + ":  " + tmp2);
-            Log.d("Num elements:", "" + getProductArray().size());
         }
         productScanner.close();
         priceScanner.close();
