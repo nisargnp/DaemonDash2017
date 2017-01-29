@@ -357,10 +357,14 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
+                        company = "mcdonald";
+
                         if (company != null && company.equals("Fact"))
                             company = "FactSet";
                         if (company != null && company.equals("Nike"))
                             company = "Nike, Inc";
+                        if (company != null && company.equals("Mcdonald"))
+                            company = "Mcdonald's";
 
                         if (company == null) {
                             runOnUiThread(new Runnable() {
@@ -378,6 +382,11 @@ public class MainActivity extends AppCompatActivity {
 
                         ArrayList<String> products = new ArrayList<String>();
                         ArrayList<String> reviews = new ArrayList<String>();
+
+                        if (company != null && company.equals("Nike, Inc"))
+                            company = "Nike";
+                        if (company != null && company.equals("Mcdonald's"))
+                            company = "Mcdonald";
 
                         for (Shop s : database.getAllShops())
                         {
@@ -397,6 +406,11 @@ public class MainActivity extends AppCompatActivity {
                                 exe.printStackTrace();
                             }
                         }
+
+                        if (company != null && company.equals("Nike"))
+                            company = "Nike, Inc";
+                        if (company != null && company.equals("Mcdonald"))
+                            company = "Mcdonald's";
 
                         Log.d("RESP", "MADE IT 1");
 
