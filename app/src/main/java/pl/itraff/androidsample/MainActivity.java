@@ -268,6 +268,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Got Picture", Toast.LENGTH_SHORT).show();
 
             Bundle extras = data.getExtras();
+            new Thread() {
+                public void run() {
+                    System.out.println("Hello from a thread!");
+                }
+            }.start();
 
 //            Bitmap bitmap;
 //            int modeId = (int) 0;
