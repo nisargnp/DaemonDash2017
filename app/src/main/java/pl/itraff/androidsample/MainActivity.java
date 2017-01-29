@@ -411,6 +411,7 @@ public class MainActivity extends AppCompatActivity {
                             company = "Nike, Inc";
                         if (company != null && company.equals("Mcdonald"))
                             company = "Mcdonald's";
+                        // Help
 
                         Log.d("RESP", "MADE IT 1");
 
