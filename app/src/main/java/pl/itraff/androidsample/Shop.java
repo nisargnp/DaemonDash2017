@@ -1,4 +1,4 @@
-package com.example.matthew.databasetest2;
+package pl.itraff.androidsample;
 
 /**
  * Created by Matthew on 1/28/2017.
@@ -42,17 +42,17 @@ public class Shop {
 
     public void setStockID(String stockID) { this.stockID = stockID; }
 
-    public int getId(int id) { return id; }
+    public int getId() { return id; }
 
-    public String getName(String name) { return name; }
+    public String getName() { return name; }
 
-    public String getProducts(String products) { return products; }
+    public String getProducts() { return products; }
 
-    public String getPrices(String prices) { return prices; }
+    public String getPrices() { return prices; }
 
-    public String getReviewer(String reviewer) { return reviewer; }
+    public String getReviewer() { return reviewer; }
 
-    public String getRating(String rating) { return rating; }
+    public String getRating() { return rating; }
 
-    public String getStockID(String stockID) { return stockID; }
+    public String getStockID() { return stockID; }
 }
