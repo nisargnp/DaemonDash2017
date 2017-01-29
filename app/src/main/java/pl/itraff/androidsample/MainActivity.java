@@ -36,11 +36,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.io.InputStream;
 
 import pl.itraff.androidsample.Event.FailureEvent;
 import pl.itraff.androidsample.Event.SuccessEvent;
@@ -211,7 +209,12 @@ public class MainActivity extends AppCompatActivity {
 
         for (Shop s : database.getAllShops())
         {
-            Log.d("apple", s.toString());
+            try {
+                s.genHashMaps();
+                Log.d("", s.toString());
+            } catch (Exception exe) {
+                exe.printStackTrace();
+            }
         }
     }
 

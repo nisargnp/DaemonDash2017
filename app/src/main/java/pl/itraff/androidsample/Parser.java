@@ -1,11 +1,12 @@
 package pl.itraff.androidsample;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.content.res.AssetManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+
 import jxl.Cell;
-import jxl.CellType;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
@@ -13,11 +14,13 @@ import jxl.read.biff.BiffException;
 public class Parser {
 
 	//parsing function
-		public static void read () {
+		public static void read (File inputWorkbook) {
 			try {
 				String name = "", products = "", prices = "", reviewers = "", ratings = "", stockCode = "";
 
-				File inputWorkbook = new File("data.xls");
+
+				// File inputWorkbook = new File("data.xls");
+
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputWorkbook);
@@ -70,8 +73,7 @@ public class Parser {
 					e.printStackTrace();
 				}
 			}
-			catch (IOException e2)
-			{
+			catch (Exception e2) {
 				e2.printStackTrace();
 			}
 		}
