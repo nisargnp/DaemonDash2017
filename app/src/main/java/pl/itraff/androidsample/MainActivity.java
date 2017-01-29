@@ -44,11 +44,36 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import pl.itraff.androidsample.DaemonDashCrawler.InfoGetter;
 import pl.itraff.androidsample.Event.FailureEvent;
 import pl.itraff.androidsample.Event.SuccessEvent;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    final String[] BRANDS = {
+            "Mcdonalds",
+            "Chik-fil-A",
+            "Starbucks",
+            "Taco Bell",
+            "Chipotle",
+            "Nike",
+            "Adidas",
+            "Staples",
+            "Target",
+            "Wendys",
+            "Pizza Hut",
+            "Best Buy",
+            "Book Holders",
+            "Fact Set",
+            "Google",
+            "Cipher Tech",
+            "Lockheed Martin",
+            "Capital One",
+            "NSA",
+            "Booze Allen Hamilton",
+            "Dark"
+    };
 
     public static final int REQUEST_TAKE_PHOTO = 1337;
     public static final int MY_PERMISSIONS_REQUEST = 666;
@@ -316,6 +341,41 @@ public class MainActivity extends AppCompatActivity {
                             Thread.sleep(100);
                         }
                         String product = resp.split("\"")[17];
+
+                        Log.d("RESP", product);
+
+                        String company = null;
+                        for (String brand : BRANDS) {
+                            if(product.toLowerCase().contains(brand.toLowerCase())) {
+                                company = brand;
+                                break;
+                            }
+                        }
+
+                        if (company == null) {
+                            Log.d("RESP", "UH OH");
+                            return;
+                        }
+                        Log.d("RESP", "MADE IT 1");
+
+                        InfoGetter inf = new InfoGetter(company);
+
+                        Log.d ("RESP", "MADE IT 2");
+
+                        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+
+                        Log.d("RESP", "MADE IT 3");
+
+                        Bundle b = new Bundle();
+                        b.putString("COMPANY", company);
+                        b.putString("SUMMARY", inf.getSummary());
+                        b.putStringArrayList("ARTICLES", inf.getArticleURLs());
+                        b.putStringArrayList("STOCKS", inf.getStockQuote());
+                        intent.putExtras(b); //Put your id to your next Intent
+                        startActivity(intent);
+                        finish();
+
+
                     }catch(Exception e){
                         System.out.println(e.getStackTrace().toString());
                     }
