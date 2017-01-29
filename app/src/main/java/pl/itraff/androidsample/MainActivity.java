@@ -104,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
+
+        //TESTING
+
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
