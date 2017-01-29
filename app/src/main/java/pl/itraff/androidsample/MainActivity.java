@@ -40,6 +40,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import pl.itraff.androidsample.Event.FailureEvent;
 import pl.itraff.androidsample.Event.SuccessEvent;
 
@@ -297,44 +301,39 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Got Picture", Toast.LENGTH_SHORT).show();
 
-            Bundle extras = data.getExtras();
             new Thread() {
                 public void run() {
-                    System.out.println("Hello from a thread!");
+                    try {
+
+                        final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
+                        File file = new File("/storage/emulated/0/Download/apple.jpg");
+                        RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("image_request[locale]", "en-US")
+                                .addFormDataPart("image_request[image]","apple.jpg", RequestBody.create(MEDIA_TYPE_JPG, file)).build();
+
+                        okhttp3.Request request = new okhttp3.Request.Builder()
+                                .url("http://api.cloudsightapi.com/image_requests")
+                                .post(req)
+                                .header("Authorization", "CloudSight YSYo6GdXOixs_fAvGaAkTw")
+                                .build();
+
+                        OkHttpClient client = new OkHttpClient();
+                        okhttp3.Response response = client.newCall(request).execute();
+                        String resp = new String(response.body().bytes());
+                        String token = resp.split("\"")[3];
+                        while(resp.contains("not completed")){
+                            request = new okhttp3.Request.Builder()
+                                    .url("https://api.cloudsightapi.com/image_responses/" + token)
+                                    .header("Authorization", "CloudSight YSYo6GdXOixs_fAvGaAkTw")
+                                    .build();
+                            resp = new String(client.newCall(request).execute().body().bytes());
+                            Thread.sleep(100);
+                        }
+
+                    }catch(Exception e){
+                        System.out.println(e.getStackTrace().toString());
+                    }
                 }
             }.start();
-
-//            Bitmap bitmap;
-//            int modeId = (int) 0;
-//            int sizeId = (int) 0;
-//            if (modeId == 2) {
-//                bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-//            } else {
-//                bitmap = getDownscaledBitmap(imageFile.getAbsolutePath(), ItraffApi.SIZES[modeId][sizeId]);
-//            }
-//
-//            // Do the API request
-//            String userKey = textViewKey.getText().toString();
-//            if (iTraffApi == null) {
-//                iTraffApi = new ItraffApi(textViewId.getText().toString(), userKey, 0, 0);
-//            } else {
-//                iTraffApi
-//                    .setClientId(textViewId.getText().toString())
-//                    .setClientKey(userKey)
-//                    .setMode((int) 0)
-//                    .setFilter((int) 0)
-//                    ;
-//            }
-//
-//            progressBar.setVisibility(View.VISIBLE);
-//            btnViewResult.setVisibility(View.GONE);
-//            textViewResult.setVisibility(View.GONE);
-//
-//            try {
-//                EventBus.getDefault().post(new RecognizeEvent(bitmap2byteArray(bitmap), userKey, iTraffApi.getRequestUrl()));
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            }
 
         }
     }

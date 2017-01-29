@@ -21,6 +21,8 @@
       <module fileurl="file://$PROJECT_DIR$/jna-platform-4.1.0/jna-platform-4.1.0.iml" filepath="$PROJECT_DIR$/jna-platform-4.1.0/jna-platform-4.1.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/jsr305-1.3.9/jsr305-1.3.9.iml" filepath="$PROJECT_DIR$/jsr305-1.3.9/jsr305-1.3.9.iml" />
       <module fileurl="file://$PROJECT_DIR$/jxl/jxl.iml" filepath="$PROJECT_DIR$/jxl/jxl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/okhttp-3.5.0/okhttp-3.5.0.iml" filepath="$PROJECT_DIR$/okhttp-3.5.0/okhttp-3.5.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/okio-1.11.0/okio-1.11.0.iml" filepath="$PROJECT_DIR$/okio-1.11.0/okio-1.11.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/protobuf-java-2.6.1/protobuf-java-2.6.1.iml" filepath="$PROJECT_DIR$/protobuf-java-2.6.1/protobuf-java-2.6.1.iml" />
     </modules>
   </component>
