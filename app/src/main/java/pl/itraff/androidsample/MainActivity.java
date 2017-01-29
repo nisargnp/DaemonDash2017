@@ -293,9 +293,9 @@ public class MainActivity extends AppCompatActivity {
                     try {
 
                         final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
-                        File file = new File("/storage/emulated/0/Download/apple.jpg");
+                        File file = new File(imageFile.getAbsolutePath());
                         RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("image_request[locale]", "en-US")
-                                .addFormDataPart("image_request[image]","apple.jpg", RequestBody.create(MEDIA_TYPE_JPG, file)).build();
+                                .addFormDataPart("image_request[image]","user.jpg", RequestBody.create(MEDIA_TYPE_JPG, file)).build();
 
                         okhttp3.Request request = new okhttp3.Request.Builder()
                                 .url("http://api.cloudsightapi.com/image_requests")
@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                             resp = new String(client.newCall(request).execute().body().bytes());
                             Thread.sleep(100);
                         }
-
+                        String product = resp.split("\"")[17];
                     }catch(Exception e){
                         System.out.println(e.getStackTrace().toString());
                     }
