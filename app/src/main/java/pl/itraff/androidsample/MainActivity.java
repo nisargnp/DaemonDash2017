@@ -47,6 +47,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.io.*;
 import pl.itraff.androidsample.DaemonDashCrawler.InfoGetter;
 import pl.itraff.androidsample.Event.FailureEvent;
 import pl.itraff.androidsample.Event.SuccessEvent;
@@ -207,17 +208,16 @@ public class MainActivity extends AppCompatActivity {
         database = new DBHandler(this);
 
         try {
-            File file = File.createTempFile("temp", "tmp");
+            File file = File.createTempFile("temp", ".xls");
             file.deleteOnExit();
             InputStream is = am.open("data.xls");
             Log.d("qwerty", "OPENED!!!");
             OutputStream outputStream = new FileOutputStream(file);
             if (outputStream == null)
                 Log.d("adfasdf", "outputStream is null");
-//            IOUtils.copy(is, outputStream);
+            IOUtils.copy(is, outputStream);
             Log.d("qwerty", "WROTE TO FILE!!!");
             Log.d("log file", file.toString());
-            Log.d("is null", Boolean.toString(file == null));
             Parser.read(file);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        Log.d("status: ", "3 -- " + database.getShopsCount());
+                        // Log.d("status: ", "3 -- " + database.getShopsCount());
 
                         ArrayList<String> products = new ArrayList<String>();
                         ArrayList<String> reviews = new ArrayList<String>();
@@ -367,7 +367,9 @@ public class MainActivity extends AppCompatActivity {
                                 s.genHashMaps();
                                 Log.d("passed hash maps:", "yes");
 
-                                if (s.getName().toLowerCase().contains(company)) {
+                                Log.d(company, s.getName());
+
+                                if (s.getName().toLowerCase().contains(company.toLowerCase())) {
                                     Log.d("", s.toString());
                                     products = s.getProductArray();
                                     reviews = s.getReviewArray();

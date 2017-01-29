@@ -44,6 +44,7 @@ dependencies {
     compile project(':httpclient-cache-4.5.3')
     compile project(':httpcore-4.4.6')
     compile project(':httpmime-4.5.3')
-    compile project(":okhttp-3.5.0")
-    compile project(":okio-1.11.0")
+    compile project(':okhttp-3.5.0')
+    compile project(':okio-1.11.0')
+    compile project(':commons-io-2.5')
 }
