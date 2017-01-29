@@ -7,6 +7,14 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/striped_background"
+            android:scaleType="centerCrop"
+            android:scaleY="1.5"/>
+
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"

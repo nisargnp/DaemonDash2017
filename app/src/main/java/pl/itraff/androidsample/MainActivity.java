@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
             "Cipher",
             "Lockheed Martin",
             "Capital One",
-            "NSA",
-            "Booze Allen Hamilton",
+            "National Security Agency",
+            "Hamilton",
             "Dark"
     };
 
@@ -357,14 +357,22 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        company = "mcdonald";
-
-                        if (company != null && company.equals("Fact"))
+                        if (company != null && company.toLowerCase().equals("Fact".toLowerCase()))
                             company = "FactSet";
-                        if (company != null && company.equals("Nike"))
+                        if (company != null && company.toLowerCase().equals("Nike".toLowerCase()))
                             company = "Nike, Inc";
-                        if (company != null && company.equals("Mcdonald"))
+                        if (company != null && company.toLowerCase().equals("Mcdonald".toLowerCase()))
                             company = "Mcdonald's";
+                        if (company != null && company.toLowerCase().equals("Chipotle".toLowerCase()))
+                            company = "Chipotle Mexican Grill";
+                        if (company != null && company.toLowerCase().equals("Staple".toLowerCase()))
+                            company = "Staples Inc";
+                        if (company != null && company.toLowerCase().equals("Target".toLowerCase()))
+                            company = "Target Corporation";
+                        if (company != null && company.toLowerCase().contains("Agency".toLowerCase()))
+                            company = "National Security Agency";
+                        if (company != null && company.toLowerCase().contains("Hamilton".toLowerCase()))
+                            company = "Booz Allen Hamilton";
 
                         if (company == null) {
                             runOnUiThread(new Runnable() {
@@ -383,10 +391,20 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<String> products = new ArrayList<String>();
                         ArrayList<String> reviews = new ArrayList<String>();
 
-                        if (company != null && company.equals("Nike, Inc"))
+                        if (company != null && company.toLowerCase().equals("Nike, Inc".toLowerCase()))
                             company = "Nike";
-                        if (company != null && company.equals("Mcdonald's"))
+                        if (company != null && company.toLowerCase().equals("Mcdonald's".toLowerCase()))
                             company = "Mcdonald";
+                        if (company != null && company.toLowerCase().equals("Chipotle Mexican Grill".toLowerCase()))
+                            company = "Chipotle";
+                        if (company != null && company.toLowerCase().equals("Staples Inc".toLowerCase()))
+                            company = "Staple";
+                        if (company != null && company.toLowerCase().equals("Target Corporation".toLowerCase()))
+                            company = "Target";
+                        if (company != null && company.toLowerCase().equals("National Security Agency".toLowerCase()))
+                            company = "NSA";
+                        if (company != null && company.toLowerCase().contains("Booz Allen Hamilton".toLowerCase()))
+                            company = "Hamilton";
 
                         for (Shop s : database.getAllShops())
                         {
@@ -407,11 +425,20 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        if (company != null && company.equals("Nike"))
+                        if (company != null && company.toLowerCase().equals("Nike".toLowerCase()))
                             company = "Nike, Inc";
-                        if (company != null && company.equals("Mcdonald"))
+                        if (company != null && company.toLowerCase().equals("Mcdonald".toLowerCase()))
                             company = "Mcdonald's";
-                        // Help
+                        if (company != null && company.toLowerCase().equals("Chipotle".toLowerCase()))
+                            company = "Chipotle Mexican Grill";
+                        if (company != null && company.toLowerCase().equals("Staple".toLowerCase()))
+                            company = "Staples Inc";
+                        if (company != null && company.toLowerCase().equals("Target Corporation".toLowerCase()))
+                            company = "Target";
+                        if (company != null && company.toLowerCase().equals("NSA".toLowerCase()))
+                            company = "National Security Agency";
+                        if (company != null && company.toLowerCase().contains("Hamilton".toLowerCase()))
+                            company = "Booz Allen Hamilton";
 
                         Log.d("RESP", "MADE IT 1");
 
@@ -419,9 +446,34 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.d ("RESP", "MADE IT 2");
 
+                        if (company.toLowerCase().contains("book"))
+                            company = "BookHolders";
+                        if (company.toLowerCase().contains("cipher"))
+                            company = "Cipher Tech Solutions";
+
                         Bundle b = new Bundle();
                         b.putString("COMPANY", company);
-                        b.putString("SUMMARY", inf.getSummary());
+                        if (!company.toLowerCase().contains("book") && !company.toLowerCase().contains("cipher"))
+                            b.putString("SUMMARY", inf.getSummary());
+                        else if (company.toLowerCase().contains("book"))
+                            b.putString("SUMMARY", "Most students find as they go through college " +
+                                    "they get ripped off more and more for outrageous textbook " +
+                                    "prices. To top it off when they try to sell back that " +
+                                    "textbook they get literally pennies. We realized that local " +
+                                    "and global textbook stores have no solution to this " +
+                                    "growing problem so BookHolders.com was formed to help " +
+                                    "students buy and sell their books.\n");
+                        else if (company.toLowerCase().contains("cipher"))
+                            b.putString("SUMMARY", "Cipher Tech Solutions, Inc. (Cipher Tech) was" +
+                                    " founded in 2006 by two engineering students from" +
+                                    " Northeastern University who were passionate about national" +
+                                    " security, software development, and entrepreneurship." +
+                                    " Alongside classwork, Cipher Tech began to bridge the gap" +
+                                    " between the nation’s best academics and students, and the" +
+                                    " defense community. Just a few years later, in true “David" +
+                                    " and Goliath” fashion, Cipher Tech became known as a fierce" +
+                                    " competitor by defense and intelligence firms many times" +
+                                    " our size.");
                         b.putStringArrayList("ARTICLES", inf.getArticleURLs());
                         b.putStringArrayList("STOCKS", inf.getStockQuote());
                         b.putStringArrayList("PRODUCTS", products);

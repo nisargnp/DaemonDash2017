@@ -44,14 +44,18 @@ public class SecondActivity extends Activity{
             Log.d("is null:", Boolean.toString(companyProducts == null));
             companyReviews = b.getStringArrayList("REVIEWS"); // reviews
 
+            String temp = "1";
+            try {
+                temp = companyStocks.get(1);
 
-            String temp = companyStocks.get(1);
-
-            //LAST PRICE, CHANGE PERCENT, HIGH, LOW
-            companyStocks.add(0, "Last Price:      $" + companyStocks.remove(0));
-            companyStocks.add(1, "Change Percent:  " + companyStocks.remove(1).substring(0, Math.min(temp.length(),4)) + "%");
-            companyStocks.add(2, "High Price:      $" + companyStocks.remove(2));
-            companyStocks.add(3, "Low Price:       $" + companyStocks.remove(3));
+                //LAST PRICE, CHANGE PERCENT, HIGH, LOW
+                companyStocks.add(0, "Last Price:      $" + companyStocks.remove(0));
+                companyStocks.add(1, "Change Percent:  " + companyStocks.remove(1).substring(0, Math.min(temp.length(),4)) + "%");
+                companyStocks.add(2, "High Price:      $" + companyStocks.remove(2));
+                companyStocks.add(3, "Low Price:       $" + companyStocks.remove(3));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         super.onCreate(savedInstanceState);
@@ -112,8 +116,8 @@ public class SecondActivity extends Activity{
 
         listDataHeader.add("Stocks");
         List<String> underStocks = new ArrayList<String>();
-        underStocks.addAll(companyStocks);
-
+        if (companyStocks != null)
+            underStocks.addAll(companyStocks);
         // Adding child data
 
 
