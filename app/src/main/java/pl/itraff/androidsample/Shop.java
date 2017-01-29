@@ -1,7 +1,9 @@
 package pl.itraff.androidsample;
 
 import android.renderscript.Sampler;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -21,9 +23,14 @@ public class Shop {
     private HashMap<String, String> productPrices;
     private HashMap<String, String> reviews;
 
+    private ArrayList<String> productArray;
+    private ArrayList<String> reviewArray;
+
     public Shop() {
         productPrices = new HashMap<String, String>();
         reviews = new HashMap<String, String>();
+        productArray = new ArrayList<String>();
+        reviewArray = new ArrayList<String>();
     }
 
     public Shop(int id, String name, String products, String prices,
@@ -38,6 +45,8 @@ public class Shop {
 
         productPrices = new HashMap<String, String>();
         reviews = new HashMap<String, String>();
+        productArray = new ArrayList<String>();
+        reviewArray = new ArrayList<String>();
     }
 
     public void setId(int id) { this.id = id; }
@@ -84,6 +93,9 @@ public class Shop {
         return value.toString();
     }
 
+    public ArrayList<String> getProductArray() { return productArray; }
+    public ArrayList<String> getReviewArray() { return reviewArray; }
+
     public void genHashMaps() {
         Scanner productScanner = new Scanner(products);
         productScanner.useDelimiter(",");
@@ -94,13 +106,22 @@ public class Shop {
         Scanner ratingScanner = new Scanner(rating);
         ratingScanner.useDelimiter(",");
 
-        while (productScanner.hasNext())
-            productPrices.put(productScanner.next().trim(), priceScanner.next().trim());
+        while (productScanner.hasNext()) {
+            String tmp1 = productScanner.next().trim();
+            String tmp2 = priceScanner.next().trim();
+            productPrices.put(tmp1, tmp2);
+            Log.d("product output: ", tmp1 + ": " + tmp2);
+            productArray.add(tmp1 + ":  " + tmp2);
+        }
         productScanner.close();
         priceScanner.close();
 
-        while (reviewerScanner.hasNext())
-            reviews.put(reviewerScanner.next().trim(), ratingScanner.next().trim());
+        while (reviewerScanner.hasNext()) {
+            String tmp1 = reviewerScanner.next().trim();
+            String tmp2 = ratingScanner.next().trim();
+            reviews.put(tmp1, tmp2);
+            reviewArray.add(tmp1 + " - " + tmp2);
+        }
         reviewerScanner.close();
         ratingScanner.close();
     }

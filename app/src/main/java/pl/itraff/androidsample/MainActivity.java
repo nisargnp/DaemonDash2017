@@ -37,13 +37,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import pl.itraff.androidsample.DaemonDashCrawler.InfoGetter;
 import pl.itraff.androidsample.Event.FailureEvent;
 import pl.itraff.androidsample.Event.SuccessEvent;
@@ -52,19 +55,19 @@ import pl.itraff.androidsample.Event.SuccessEvent;
 public class MainActivity extends AppCompatActivity {
 
     final String[] BRANDS = {
-            "Mcdonalds",
+            "Mcdonald",
             "Chik-fil-A",
             "Starbucks",
             "Taco Bell",
             "Chipotle",
             "Nike",
             "Adidas",
-            "Staples",
+            "Staple",
             "Target",
-            "Wendys",
+            "Wendy",
             "Pizza Hut",
             "Best Buy",
-            "Book Holders",
+            "Book",
             "Fact Set",
             "Google",
             "Cipher Tech",
@@ -222,16 +225,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Log.d("Hello!", "Bye!");
-
-        for (Shop s : database.getAllShops())
-        {
-            try {
-                s.genHashMaps();
-                Log.d("", s.toString());
-            } catch (Exception exe) {
-                exe.printStackTrace();
-            }
-        }
     }
 
     /**
@@ -313,6 +306,8 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Got Picture", Toast.LENGTH_SHORT).show();
 
+            final Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+
             new Thread() {
                 public void run() {
                     try {
@@ -322,18 +317,23 @@ public class MainActivity extends AppCompatActivity {
                         RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("image_request[locale]", "en-US")
                                 .addFormDataPart("image_request[image]","user.jpg", RequestBody.create(MEDIA_TYPE_JPG, file)).build();
 
-                        okhttp3.Request request = new okhttp3.Request.Builder()
+                        Request request = new Request.Builder()
                                 .url("http://api.cloudsightapi.com/image_requests")
                                 .post(req)
                                 .header("Authorization", "CloudSight YSYo6GdXOixs_fAvGaAkTw")
                                 .build();
 
+                        Log.d("status: ", "0");
+
                         OkHttpClient client = new OkHttpClient();
-                        okhttp3.Response response = client.newCall(request).execute();
+                        Response response = client.newCall(request).execute();
                         String resp = new String(response.body().bytes());
                         String token = resp.split("\"")[3];
+
+                        Log.d("status: ", "1");
+
                         while(resp.contains("not completed")){
-                            request = new okhttp3.Request.Builder()
+                            request = new Request.Builder()
                                     .url("https://api.cloudsightapi.com/image_responses/" + token)
                                     .header("Authorization", "CloudSight YSYo6GdXOixs_fAvGaAkTw")
                                     .build();
@@ -342,7 +342,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                         String product = resp.split("\"")[17];
 
-                        Log.d("RESP", product);
+                        Log.d("status: ", "2");
+
+                        // Toast.makeText(MainActivity.this, product, Toast.LENGTH_LONG).show();
+
+                        Log.d("status: ", "2.5 -- " + product);
 
                         String company = null;
                         for (String brand : BRANDS) {
@@ -351,6 +355,30 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             }
                         }
+
+                        Log.d("status: ", "3 -- " + database.getShopsCount());
+
+                        ArrayList<String> products = new ArrayList<String>();
+                        ArrayList<String> reviews = new ArrayList<String>();
+
+                        for (Shop s : database.getAllShops())
+                        {
+                            try {
+                                s.genHashMaps();
+                                Log.d("passed hash maps:", "yes");
+
+                                if (s.getName().toLowerCase().contains(company)) {
+                                    Log.d("", s.toString());
+                                    products = s.getProductArray();
+                                    reviews = s.getReviewArray();
+                                    break;
+                                }
+                            } catch (Exception exe) {
+                                exe.printStackTrace();
+                            }
+                        }
+
+                        Log.d("status: ", "4");
 
                         if (company == null) {
                             Log.d("RESP", "UH OH");
@@ -362,8 +390,6 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.d ("RESP", "MADE IT 2");
 
-                        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-
                         Log.d("RESP", "MADE IT 3");
 
                         Bundle b = new Bundle();
@@ -371,17 +397,20 @@ public class MainActivity extends AppCompatActivity {
                         b.putString("SUMMARY", inf.getSummary());
                         b.putStringArrayList("ARTICLES", inf.getArticleURLs());
                         b.putStringArrayList("STOCKS", inf.getStockQuote());
+                        b.putStringArrayList("PRODUCTS", products);
+                        b.putStringArrayList("REVIEWS", reviews);
                         intent.putExtras(b); //Put your id to your next Intent
                         startActivity(intent);
+
+                        Log.d("status: ", "5");
+
                         finish();
 
-
-                    }catch(Exception e){
+                    } catch(Exception e){
                         System.out.println(e.getStackTrace().toString());
                     }
                 }
             }.start();
-
         }
     }
 
