@@ -32,10 +32,12 @@ public class InfoGetter {
 		//Get news articles regarding company
 		Elements stories = newspage.select("div.g._cy");
 		Elements links = stories.select("a[href]");
+		int x = 0;
 		for (Element article : links){
 			String link = article.attr("href");
-			if(articles.contains(link) == false){
+			if(x < 7 && articles.contains(link) == false){
 				articles.add(link);
+				x++;
 			}
 		}
 		//create summary of business from wikipedia article regarding the business in question
@@ -77,10 +79,12 @@ public class InfoGetter {
 		//Get news articles regarding company
 		Elements stories = newspage.select("div.g._cy");
 		Elements links = stories.select("a[href]");
+		int x = 0;
 		for (Element article : links){
 			String link = article.attr("href");
-			if(articles.contains(link) == false){
+			if(x < 7 && articles.contains(link) == false){
 				articles.add(link);
+				x++;
 			}
 		}
 		//create summary of business from wikipedia article regarding the business in question
