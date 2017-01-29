@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +18,7 @@ import android.widget.Toast;
 import pl.itraff.androidsample.ExpandableListAdapter;
 import pl.itraff.androidsample.R;
 
-public class SecondActivity extends Activity {
+public class SecondActivity extends Activity{
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
@@ -41,6 +43,15 @@ public class SecondActivity extends Activity {
             companyProducts = b.getStringArrayList("PRODUCTS"); // products
             Log.d("is null:", Boolean.toString(companyProducts == null));
             companyReviews = b.getStringArrayList("REVIEWS"); // reviews
+
+
+            String temp = companyStocks.get(1);
+
+            //LAST PRICE, CHANGE PERCENT, HIGH, LOW
+            companyStocks.add(0, "Last Price:      $" + companyStocks.remove(0));
+            companyStocks.add(1, "Change Percent:  " + companyStocks.remove(1).substring(0, Math.min(temp.length(),4)) + "%");
+            companyStocks.add(2, "High Price:      $" + companyStocks.remove(2));
+            companyStocks.add(3, "Low Price:       $" + companyStocks.remove(3));
         }
 
         super.onCreate(savedInstanceState);
@@ -58,6 +69,21 @@ public class SecondActivity extends Activity {
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
+
+        expListView.setOnChildClickListener(new OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                if (groupPosition == 3) {
+                    String url = companyNews.get(childPosition);
+                    Log.d("status", url);
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(browserIntent);
+                }
+                return false;
+            }
+        });
+
+        expListView.expandGroup(0);
     }
 
     /*
@@ -97,4 +123,5 @@ public class SecondActivity extends Activity {
         listDataChild.put(listDataHeader.get(3), underNews);
         listDataChild.put(listDataHeader.get(4), underStocks);
     }
+
 }

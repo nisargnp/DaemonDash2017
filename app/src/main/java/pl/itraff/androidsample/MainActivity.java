@@ -104,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
-
-        //TESTING
-
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -145,8 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        Toast.makeText(this, "Testing", Toast.LENGTH_SHORT).show();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_action_main);
@@ -307,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
 
-            Toast.makeText(this, "Got Picture", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Wait.", Toast.LENGTH_LONG).show();
 
             final Intent intent = new Intent(MainActivity.this, SecondActivity.class);
 
@@ -345,11 +340,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         String product = resp.split("\"")[17];
 
-                        Log.d("status: ", "2");
+                        Log.d("status: ", "2 -- " + product);
 
-                        // Toast.makeText(MainActivity.this, product, Toast.LENGTH_LONG).show();
-
-                        Log.d("status: ", "2.5 -- " + product);
+                        //TODO: REMOVE THIS
+                        product = "mcdonald";
 
                         String company = null;
                         for (String brand : BRANDS) {
@@ -359,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        // Log.d("status: ", "3 -- " + database.getShopsCount());
+//                        Log.d("status: ", "3 -- " + database.getShopsCount());
 
                         ArrayList<String> products = new ArrayList<String>();
                         ArrayList<String> reviews = new ArrayList<String>();
