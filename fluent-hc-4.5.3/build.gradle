@@ -1,2 +1,0 @@
-configurations.maybeCreate("default")
-artifacts.add("default", file('fluent-hc-4.5.3.jar'))

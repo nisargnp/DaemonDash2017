@@ -47,8 +47,6 @@ import okhttp3.RequestBody;
 import pl.itraff.androidsample.Event.FailureEvent;
 import pl.itraff.androidsample.Event.SuccessEvent;
 
-import com.google.api.client.util.IOUtils;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -188,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             OutputStream outputStream = new FileOutputStream(file);
             if (outputStream == null)
                 Log.d("adfasdf", "outputStream is null");
-            IOUtils.copy(is, outputStream);
+//            IOUtils.copy(is, outputStream);
             Log.d("qwerty", "WROTE TO FILE!!!");
             Log.d("log file", file.toString());
             Log.d("is null", Boolean.toString(file == null));

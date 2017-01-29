@@ -1,2 +1,0 @@
-configurations.maybeCreate("default")
-artifacts.add("default", file('protobuf-java-2.6.1.jar'))
