@@ -181,19 +181,19 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
 
-        btnViewResult = (Button) findViewById(R.id.btn_view_result);
-        btnViewResult.setVisibility(View.GONE);
-        btnViewResult.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri resultImageUri = FileProvider.getUriForFile(MainActivity.this, FILE_PROVIDER_NAME, imageFile);
-                grantUriPermission("pl.itraff.androidsample", resultImageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setDataAndType(resultImageUri, "image/jpeg");
-                startActivity(intent);
-            }
-        });
+//        btnViewResult = (Button) findViewById(R.id.btn_view_result);
+//        btnViewResult.setVisibility(View.GONE);
+//        btnViewResult.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Uri resultImageUri = FileProvider.getUriForFile(MainActivity.this, FILE_PROVIDER_NAME, imageFile);
+//                grantUriPermission("pl.itraff.androidsample", resultImageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                intent.setDataAndType(resultImageUri, "image/jpeg");
+//                startActivity(intent);
+//            }
+//        });
 
         // Updates form fields with data from SharedPreferences
         readSettings();
@@ -302,12 +302,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
 
-            Toast.makeText(this, "Please Wait.", Toast.LENGTH_LONG).show();
-
             final Intent intent = new Intent(MainActivity.this, SecondActivity.class);
 
             new Thread() {
                 public void run() {
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnTakePic.setEnabled(false);
+                            progressBar.setVisibility(View.VISIBLE);
+                        }
+                    });
+
                     try {
 
                         final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
@@ -350,6 +357,18 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
+                        if (company == null) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MainActivity.this, "Please Try Again.", Toast.LENGTH_LONG).show();
+                                    btnTakePic.setEnabled(true);
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
+                            return;
+                        }
+
 //                        Log.d("status: ", "3 -- " + database.getShopsCount());
 
                         ArrayList<String> products = new ArrayList<String>();
@@ -374,19 +393,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        Log.d("status: ", "4");
-
-                        if (company == null) {
-                            Log.d("RESP", "UH OH");
-                            return;
-                        }
                         Log.d("RESP", "MADE IT 1");
 
                         InfoGetter inf = new InfoGetter(company);
 
                         Log.d ("RESP", "MADE IT 2");
-
-                        Log.d("RESP", "MADE IT 3");
 
                         Bundle b = new Bundle();
                         b.putString("COMPANY", company);
@@ -396,6 +407,15 @@ public class MainActivity extends AppCompatActivity {
                         b.putStringArrayList("PRODUCTS", products);
                         b.putStringArrayList("REVIEWS", reviews);
                         intent.putExtras(b); //Put your id to your next Intent
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                btnTakePic.setEnabled(true);
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+
                         startActivity(intent);
 
                         Log.d("status: ", "5");
@@ -403,6 +423,15 @@ public class MainActivity extends AppCompatActivity {
                         // finish();
 
                     } catch(Exception e){
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                btnTakePic.setEnabled(true);
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+
                         System.out.println(e.getStackTrace().toString());
                     }
                 }
