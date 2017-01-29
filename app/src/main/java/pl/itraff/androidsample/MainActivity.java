@@ -62,16 +62,16 @@ public class MainActivity extends AppCompatActivity {
             "Taco Bell",
             "Chipotle",
             "Nike",
-            "Adidas",
             "Staple",
             "Target",
             "Wendy",
             "Pizza Hut",
             "Best Buy",
             "Book",
-            "Fact Set",
+            "Fact",
+            "FactSet",
             "Google",
-            "Cipher Tech",
+            "Cipher",
             "Lockheed Martin",
             "Capital One",
             "NSA",
@@ -356,6 +356,11 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             }
                         }
+
+                        if (company != null && company.equals("Fact"))
+                            company = "FactSet";
+                        if (company != null && company.equals("Nike"))
+                            company = "Nike, Inc";
 
                         if (company == null) {
                             runOnUiThread(new Runnable() {

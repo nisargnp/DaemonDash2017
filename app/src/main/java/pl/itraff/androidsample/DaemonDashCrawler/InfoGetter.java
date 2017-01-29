@@ -43,19 +43,23 @@ public class InfoGetter {
 		
 		//See if theres is a stock symbol for the given company
 		String stockSymbol = Jsoup.parse(Jsoup.connect(symbolUrl).get().select("body").toString()).text();
-		stockSymbol = stockSymbol.split("\"")[3];
-		if(stockSymbol != null){
-			//If there is a stock symbol, get a quote through the API
-			stocks = new ArrayList<String>();
-			String stockURL = "http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=" + stockSymbol + "&callback=myFunction";
-			String stockQuote = Jsoup.parse(Jsoup.connect(stockURL).get().select("body").toString()).text();
-			JsonObject stockJson = Json.parse(stockQuote.substring(stockQuote.indexOf("(")+1,stockQuote.indexOf(")"))).asObject();
-			stocks.add(stockJson.get("LastPrice").toString());
-			stocks.add(stockJson.get("ChangePercent").toString());
-			stocks.add(stockJson.get("High").toString());
-			stocks.add(stockJson.get("Low").toString());
-		}else{
+		if (stockSymbol.split("\"").length < 3){
 			stocks = null;
+		}else {
+			stockSymbol = stockSymbol.split("\"")[3];
+			if (stockSymbol != null) {
+				//If there is a stock symbol, get a quote through the API
+				stocks = new ArrayList<String>();
+				String stockURL = "http://dev.markitondemand.com/MODApis/Api/v2/Quote/jsonp?symbol=" + stockSymbol + "&callback=myFunction";
+				String stockQuote = Jsoup.parse(Jsoup.connect(stockURL).get().select("body").toString()).text();
+				JsonObject stockJson = Json.parse(stockQuote.substring(stockQuote.indexOf("(") + 1, stockQuote.indexOf(")"))).asObject();
+				stocks.add(stockJson.get("LastPrice").toString());
+				stocks.add(stockJson.get("ChangePercent").toString());
+				stocks.add(stockJson.get("High").toString());
+				stocks.add(stockJson.get("Low").toString());
+			} else {
+				stocks = null;
+			}
 		}
 	}
 	
@@ -85,11 +89,15 @@ public class InfoGetter {
 		//Get stock quote from API
 		stocks = new ArrayList<String>();
 		String stockQuote = Jsoup.parse(Jsoup.connect(stockURL).get().select("body").toString()).text();
-		JsonObject stockJson = Json.parse(stockQuote.substring(stockQuote.indexOf("(")+1,stockQuote.indexOf(")"))).asObject();
-		stocks.add(stockJson.get("LastPrice").toString());
-		stocks.add(stockJson.get("ChangePercent").toString());
-		stocks.add(stockJson.get("High").toString());
-		stocks.add(stockJson.get("Low").toString());
+		if (stockQuote.equals("myFunction([])")){
+			stocks = null;
+		}else{
+			JsonObject stockJson = Json.parse(stockQuote.substring(stockQuote.indexOf("(") + 1, stockQuote.indexOf(")"))).asObject();
+			stocks.add(stockJson.get("LastPrice").toString());
+			stocks.add(stockJson.get("ChangePercent").toString());
+			stocks.add(stockJson.get("High").toString());
+			stocks.add(stockJson.get("Low").toString());
+		}
 	}
 	
 	/*The following methods are getters for the instance variables of the class*/
